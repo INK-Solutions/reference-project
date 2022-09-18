@@ -1,0 +1,110 @@
+#First pipeline sample
+image: gradle:7.3.0-jdk11-alpine
+
+# DinD service is required for Testcontainers
+services:
+  - name: docker:dind
+    # explicitly disable tls to avoid docker startup interruption
+    command: ["--insecure-registry=$CI_REGISTRY", "--tls=false"]
+
+variables:
+  # moved these to the toml file
+  # Instruct Testcontainers to use the daemon of DinD.
+  #DOCKER_HOST: "tcp://docker:2375"
+  # Instruct Docker not to start over TLS.
+  #DOCKER_TLS_CERTDIR: ""
+  # Improve performance with overlayfs.
+  #DOCKER_DRIVER: overlay2
+
+.api-spec:
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "dev"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      #changes:
+      #  - .gitlab-ci.yml
+      #  - build.gradle
+      when: on_success
+
+.ignored-triggers:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "pipeline"'
+      when: never
+
+.schedule-trigger:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: on_success
+    - if: '$CI_COMMIT_TAG != null'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      when: on_success
+
+.merge-request-trigger:
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID != null'
+      when: on_success
+
+.docker-spec:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+    - if: '$CI_COMMIT_BRANCH != "dev"'
+
+stages:
+  - build
+  - test
+  - build-image
+  #- deploy
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`.gradle
+
+cache:
+  paths:
+    - .gradle
+
+template-gradle-build:
+  #extends:
+  #  - .api-spec
+  stage: build
+  script:
+    - gradle assemble
+    #- gradle build --no-daemon --build-cache --gradle-user-home=.gradle
+  artifacts:
+    paths:
+      - build/libs/*.jar
+
+template-test:
+  #extends:
+  #  - .api-spec
+  stage: test
+  script:
+    #- gradle test --no-daemon --build-cache --gradle-user-home=.gradle
+    - gradle check
+
+#template-docker-image:
+#  stage: build-image
+#  image: docker:20.10.12
+#  services:
+#    - docker:20.10.12-dind
+  #extends:
+  #  - .api-spec
+#  script:
+#    - echo $CI_REGISTRY_USER
+#    - echo $CI_REGISTRY_TOKEN
+#    - echo $CI_REGISTRY
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_TOKEN $CI_REGISTRY
+#    - echo "calling docker build"
+#    - docker build -t $CI_REGISTRY/seedz/los/lostemplateproject .
+#    - echo "calling docker push"
+#    - docker push $CI_REGISTRY/seedz/los/lostemplateproject
+#  only:
+#    - dev
+
+#los-deploy-dev:
+#  stage: deploy
+#  dependencies:
+#    - los-test
+#  only:
+#    - dev
+#  environment: dev
