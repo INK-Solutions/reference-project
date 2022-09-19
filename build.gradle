@@ -34,6 +34,14 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'com.jayway.jsonpath:json-path:2.7.0'
 	implementation 'house.inksoftware:system-test-framework:6.0'
+	implementation group: 'org.apache.kafka', name: 'kafka_2.10', version: '0.8.0'
+	implementation 'org.springframework.kafka:spring-kafka:2.3.4.RELEASE'
+	implementation "org.apache.kafka:kafka-clients:0.10.2.0"
+	//implementation group: 'javax.management', name: 'jmx', version: '1.2.1'
+	//implementation group: 'org.springframework.integration', name: 'spring-integration-jmx', version: '5.5.14'
+	implementation 'com.sun.jdmk:jmxtools:1.2.1'
+	implementation 'log4j:log4j:1.2.17'
+
 	runtimeOnly 'org.postgresql:postgresql'
 
 	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
@@ -43,6 +51,7 @@ dependencies {
 	testImplementation 'com.tngtech.archunit:archunit-junit5:0.23.1'
 	testImplementation 'org.testcontainers:postgresql:1.17.3'
 	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation "org.springframework.kafka:spring-kafka-test:2.3.4.RELEASE"
 }
 
 dependencyManagement {
