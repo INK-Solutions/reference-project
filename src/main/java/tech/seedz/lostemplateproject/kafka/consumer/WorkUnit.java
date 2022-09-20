@@ -2,7 +2,6 @@ package tech.seedz.lostemplateproject.kafka.consumer;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
 
 public class WorkUnit {
 
@@ -24,12 +23,12 @@ public class WorkUnit {
     public String getDefinition() {
         return definition;
     }
-
+/*
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("definition", definition)
                 .toString();
-    }
+    }*/
 }
