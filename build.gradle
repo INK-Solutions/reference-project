@@ -46,7 +46,7 @@ dependencies {
 	implementation group: 'org.apache.kafka', name: 'kafka_2.10', version: '0.8.0'
 	implementation 'org.springframework.kafka:spring-kafka:2.3.4.RELEASE'
 	implementation "org.apache.kafka:kafka-clients:0.10.2.0"
-	//implementation group: 'javax.management', name: 'jmx', version: '1.2.1'
+	implementation group: 'javax.management', name: 'jmx', version: '1.2.1'
 	//implementation group: 'org.springframework.integration', name: 'spring-integration-jmx', version: '5.5.14'
 	compileOnly (group: 'com.sun.jdmk', name: 'jmxtools', version: '1.2.1')
 	implementation 'com.sun.jdmk:jmxtools:1.2.1'

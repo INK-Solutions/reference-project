@@ -14,9 +14,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.MockConsumer;
 import org.apache.kafka.clients.consumer.OffsetResetStrategy;
 import org.apache.kafka.common.TopicPartition;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-@Log4
+
 public class KafkaConsumerTest {
 
     @Test
