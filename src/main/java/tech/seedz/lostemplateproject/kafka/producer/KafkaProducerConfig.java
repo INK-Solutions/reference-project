@@ -1,5 +1,7 @@
 package tech.seedz.lostemplateproject.kafka.producer;
 
+
+
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;

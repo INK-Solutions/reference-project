@@ -1,6 +1,5 @@
 package tech.seedz.lostemplateproject.kafka.consumer;
 
-import io.swagger.v3.oas.annotations.headers.Header;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;

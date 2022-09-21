@@ -3,6 +3,7 @@ package tech.seedz.lostemplateproject.systemtest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -10,29 +11,44 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.MockConsumer;
-import org.apache.kafka.clients.consumer.OffsetResetStrategy;
+import com.google.common.io.Resources;
+import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.AcknowledgingMessageListener;
+import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.KafkaMessageListenerContainer;
+import org.springframework.kafka.test.utils.KafkaTestUtils;
 
 public class KafkaConsumerTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerTest.class);
+
+    public KafkaConsumerTest(int i, boolean b, int i1, String messages) {
+    }
 
     @Test
     public void consumerTest() throws Exception {
 
-        final String topic = testConsumerProps.getProperty("kafka.topic.name");
+        final String topic = "input-topic";
+
         final TopicPartition topicPartition = new TopicPartition(topic, 0);
         final MockConsumer<String, String> mockConsumer = new MockConsumer<>(OffsetResetStrategy.EARLIEST);
 
         mockConsumer.schedulePollTask(() -> addTopicPartitionsAssignmentAndAddConsumerRecords(topic, mockConsumer, topicPartition));
-        mockConsumer.schedulePollTask(consumerApplication::shutdown);
-        consumerApplication.runConsume(testConsumerProps);
 
         final List<String> expectedWords = Arrays.asList("test", "kafka", "event");
-        List<String> actualRecords = Files.readAllLines(tempFilePath);
+        List<String> actualRecords = Files.readAllLines(new File(Resources.getResource("kafka-test.txt").getPath()).toPath());
         assertThat(actualRecords, equalTo(expectedWords));
     }
 
@@ -56,18 +72,18 @@ public class KafkaConsumerTest {
 
 
     @ClassRule
-    public static KafkaEmbedded embeddedKafka = new KafkaEmbedded(2, true, 2, "messages");
+    public static KafkaConsumerTest embeddedKafka = new KafkaConsumerTest(2, true, 2, "messages");
 
     @Test
     public void testSpringKafka() throws Exception {
-        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("sampleConsumer", "false", embeddedKafka);
+        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("sampleConsumer", "false", String.valueOf(embeddedKafka));
         consumerProps.put("auto.offset.reset", "earliest");
         DefaultKafkaConsumerFactory<Integer, String> cf = new DefaultKafkaConsumerFactory<>(consumerProps);
         ContainerProperties containerProps = new ContainerProperties("messages");
 
         final CountDownLatch latch = new CountDownLatch(4);
         containerProps.setMessageListener((AcknowledgingMessageListener<Integer, String>) (message, ack) -> {
-            log.info("Receiving: " + message);
+            LOGGER.info("Receiving: " + message);
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -83,7 +99,7 @@ public class KafkaConsumerTest {
         container.start();
 //        ContainerTestUtils.waitForAssignment(container, embeddedKafka.getPartitionsPerTopic());
 
-        Map<String, Object> senderProps = KafkaTestUtils.producerProps(embeddedKafka);
+        Map<String, Object> senderProps = KafkaTestUtils.producerProps(String.valueOf(embeddedKafka));
         ProducerFactory<Integer, String> pf = new DefaultKafkaProducerFactory<Integer, String>(senderProps);
         KafkaTemplate<Integer, String> template = new KafkaTemplate<>(pf);
         template.setDefaultTopic("messages");
@@ -100,7 +116,7 @@ public class KafkaConsumerTest {
     public void testEmbeddedRawKafka() throws Exception {
 
 
-        Map<String, Object> senderProps = KafkaTestUtils.producerProps(embeddedKafka);
+        Map<String, Object> senderProps = KafkaTestUtils.producerProps(String.valueOf(embeddedKafka));
         KafkaProducer<Integer, String> producer = new KafkaProducer<>(senderProps);
         producer.send(new ProducerRecord<>("messages", 0, 0, "message0")).get();
         producer.send(new ProducerRecord<>("messages", 0, 1, "message1")).get();
@@ -108,7 +124,7 @@ public class KafkaConsumerTest {
         producer.send(new ProducerRecord<>("messages", 1, 3, "message3")).get();
 
 
-        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("sampleRawConsumer", "false", embeddedKafka);
+        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("sampleRawConsumer", "false", String.valueOf(embeddedKafka));
         consumerProps.put("auto.offset.reset", "earliest");
 
         final CountDownLatch latch = new CountDownLatch(4);
@@ -120,7 +136,7 @@ public class KafkaConsumerTest {
                 while (true) {
                     ConsumerRecords<Integer, String> records = kafkaConsumer.poll(100);
                     for (ConsumerRecord<Integer, String> record : records) {
-                        log.info("consuming from topic = {}, partition = {}, offset = {}, key = {}, value = {}",
+                        LOGGER.info("consuming from topic = {}, partition = {}, offset = {}, key = {}, value = {}",
                                 record.topic(), record.partition(), record.offset(), record.key(), record.value());
                         latch.countDown();
                     }

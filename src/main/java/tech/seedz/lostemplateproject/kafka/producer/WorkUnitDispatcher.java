@@ -2,16 +2,11 @@ package tech.seedz.lostemplateproject.kafka.producer;
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import sample.producer.config.KafkaProducerProperties;
-import sample.producer.domain.WorkUnit;
 
-import javax.websocket.SendResult;
 
 @Log4j2
 @Service
