@@ -1,0 +1,25 @@
+{
+"fields": [
+    {
+        "name": "id",
+        "type": {
+            "avro.java.string": "String",
+            "type": "string"
+        }
+    },
+    {
+        "name": "loanId",
+        "type": {
+            "avro.java.string": "String",
+            "type": "string"
+        }
+    },
+    {
+        "name": "approved",
+        "type": "boolean"
+    }
+],
+"name": "LoanApprovalDecisionEvent",
+"namespace": "tech.seedz.template.generated.loan",
+"type": "record"
+}

@@ -1,0 +1,37 @@
+{
+"fields": [
+    {
+        "name": "eventId",
+        "type": {
+            "avro.java.string": "String",
+            "type": "string"
+        }
+    },
+    {
+        "name": "loanId",
+        "type": {
+            "avro.java.string": "String",
+            "type": "string"
+        }
+    },
+    {
+        "name": "clientId",
+        "type": {
+            "avro.java.string": "String",
+            "type": "string"
+        }
+    },
+    {
+        "name": "amount",
+        "type": {
+            "logicalType":"decimal",
+            "type": "bytes",
+            "precision": 20,
+            "scale": 7
+        }
+    }
+],
+"name": "LoanApprovalRequest",
+"namespace": "tech.seedz.template.generated.loan",
+"type": "record"
+}

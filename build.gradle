@@ -1,7 +1,9 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.3'
-	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+	id 'org.springframework.boot' version '2.7.4'
+	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
 	id 'java'
+	id 'idea'
+	id 'com.github.davidmc24.gradle.plugin.avro' version '1.5.0'
 	id 'checkstyle'
 }
 
@@ -18,12 +20,7 @@ configurations {
 repositories {
 	mavenCentral()
 	maven {
-		url 'https://packages.confluent.io/maven/'
-		metadataSources {
-			mavenPom()
-			artifact()
-			ignoreGradleMetadataRedirection()
-		}
+		url "https://packages.confluent.io/maven"
 	}
 }
 
@@ -34,6 +31,17 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-stream'
+	implementation 'org.apache.kafka:kafka-streams'
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka-streams'
+	implementation 'org.springframework.kafka:spring-kafka'
+	implementation "io.confluent:kafka-avro-serializer:7.2.1"
+	implementation "io.confluent:kafka-streams-avro-serde:7.2.1"
+	implementation 'org.apache.avro:avro:1.11.1'
+	implementation ('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+
 	implementation 'org.flywaydb:flyway-core:9.2.1'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -44,11 +52,6 @@ dependencies {
 	implementation 'com.jayway.jsonpath:json-path:2.7.0'
 	implementation 'house.inksoftware:system-test-framework:6.0'
 
-	implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '3.2.3'
-	implementation group: 'org.apache.kafka', name: 'kafka_2.13', version: '3.2.3'
-	implementation 'org.springframework.kafka:spring-kafka'
-
-	implementation 'io.confluent:kafka-avro-serializer:7.0.1'
 	implementation 'log4j:log4j:1.2.17'
 
 	runtimeOnly 'org.postgresql:postgresql'
@@ -59,13 +62,12 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'com.tngtech.archunit:archunit-junit5:0.23.1'
 	testImplementation 'org.testcontainers:postgresql:1.17.3'
-	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation "org.springframework.kafka:spring-kafka-test"
 }
 
 dependencyManagement {
 	imports {
-		mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.4"
 	}
 }
 
