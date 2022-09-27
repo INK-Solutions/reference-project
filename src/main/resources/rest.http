@@ -1,0 +1,8 @@
+### gmail
+POST localhost:8080/api/template/loan-requests
+Content-Type: application/json
+
+{
+  "clientId": "fake-client-id-6",
+  "amount": "2300.55"
+}

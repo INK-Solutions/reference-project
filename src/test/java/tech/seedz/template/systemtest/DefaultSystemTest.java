@@ -1,9 +1,6 @@
 package tech.seedz.template.systemtest;
 
 import house.inksoftware.systemtest.db.InitialDataPopulation;
-//import house.inksoftware.systemtest.domain.steps.ExecutableStep;
-//import house.inksoftware.systemtest.domain.steps.StepExecutorService;
-//import house.inksoftware.systemtest.domain.utils.JsonUtils;
 import house.inksoftware.systemtest.domain.steps.ExecutableStep;
 import house.inksoftware.systemtest.domain.steps.StepExecutorService;
 import org.junit.jupiter.api.Test;

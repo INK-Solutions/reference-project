@@ -8,6 +8,5 @@ Most of the written code is meant to serve as an example and should be replaced 
 
 ## TODO
 - Remove credentials 
-- Providing example of consumer
 - Adjusting system test to work with kafka
 

@@ -2,6 +2,7 @@ package tech.seedz.template.service.eventhandler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import tech.seedz.template.dao.repository.LoanRequestRepository;
 import tech.seedz.template.infrastructure.events.incoming.IncomingEventHandler;
 import tech.seedz.template.service.event.incoming.LoanApprovalDecisionEvent;
@@ -9,6 +10,7 @@ import tech.seedz.template.service.event.incoming.LoanApprovalDecisionEvent;
 /*
 This class is given as an example and should be replaced with real handler
  */
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class LoanApprovalDecisionEventHandler implements IncomingEventHandler<LoanApprovalDecisionEvent> {

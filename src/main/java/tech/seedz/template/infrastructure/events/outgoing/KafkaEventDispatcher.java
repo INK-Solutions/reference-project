@@ -7,9 +7,10 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import tech.seedz.template.generated.loan.LoanApprovalRequest;
 import tech.seedz.template.infrastructure.events.outgoing.mapper.LoanApprovalRequestMapper;
+import tech.seedz.template.service.event.outgoing.EventDispatcher;
 import tech.seedz.template.service.event.outgoing.LoanRequestCreatedEvent;
 import tech.seedz.template.service.event.outgoing.PublishableEvent;
-import tech.seedz.template.service.event.outgoing.EventDispatcher;
+
 
 /*
 This is a good class that should stay, but loanApprovalTemplate & loanApprovalRequestTopic are part of template
