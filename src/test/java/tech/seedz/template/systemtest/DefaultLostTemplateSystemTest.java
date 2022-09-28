@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import tech.seedz.template.TemplateApplication;
 
 import javax.sql.DataSource;
-import java.util.Arrays;
 
 import static org.springframework.test.context.TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS;
 
@@ -42,11 +41,19 @@ public class DefaultLostTemplateSystemTest extends AbstractSystemTest {
 
 
     public static class ResourceLauncher implements TestExecutionListener {
+        private final SystemTestPostgresLauncher dbLauncher = new SystemTestPostgresLauncher("postgres:11.1");
+        private final SystemTestKafkaLauncher kafkaLauncher = new SystemTestKafkaLauncher("confluentinc/cp-kafka:5.4.3");
         @Override
         public void beforeTestClass(TestContext testContext) {
-            new SystemTestPostgresLauncher("postgres:11.1").setup();
-            new SystemTestKafkaLauncher("confluentinc/cp-kafka:5.4.3").setup();
+            dbLauncher.setup();
+            kafkaLauncher.setup();
             new SystemTestDatabasePopulatorLauncher("db/migration/table", testContext.getApplicationContext().getBean(DataSource.class)).setup();
+        }
+
+        @Override
+        public void afterTestExecution(TestContext testContext) throws Exception {
+            dbLauncher.shutdown();
+            kafkaLauncher.shutdown();
         }
     }
 }
