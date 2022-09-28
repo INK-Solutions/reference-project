@@ -3,6 +3,17 @@ POST localhost:8080/api/template/loan-requests
 Content-Type: application/json
 
 {
-  "clientId": "fake-client-id-6",
+  "clientId": "fake-client-id-7",
+  "amount": "2300.55"
+}
+
+
+###
+
+POST localhost:8080/api/template/loan-requests
+Content-Type: application/json
+
+{
+  "clientId": "fake-client-id-7",
   "amount": "2300.55"
 }

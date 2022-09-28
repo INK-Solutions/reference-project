@@ -12,7 +12,7 @@ public class LoanApprovalRequestMapper {
                 .setEventId(event.getId())
                 .setLoanId(event.getLoanId())
                 .setClientId(event.getClientId())
-                .setAmount2(event.getAmount())
+                .setAmount(event.getAmount())
                 .build();
     }
 }

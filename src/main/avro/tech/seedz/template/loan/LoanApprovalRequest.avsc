@@ -22,7 +22,7 @@
         }
     },
     {
-        "name": "amount2",
+        "name": "amount",
         "type": {
             "logicalType":"decimal",
             "type": "bytes",
