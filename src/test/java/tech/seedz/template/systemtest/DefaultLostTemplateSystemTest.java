@@ -1,21 +1,25 @@
 package tech.seedz.template.systemtest;
 
 import house.inksoftware.systemtest.AbstractSystemTest;
-import house.inksoftware.systemtest.configuration.infrastructure.db.SystemTestDatabasePopulatorLauncher;
-import house.inksoftware.systemtest.configuration.infrastructure.db.postgres.SystemTestPostgresLauncher;
-import house.inksoftware.systemtest.configuration.infrastructure.kafka.SystemTestKafkaLauncher;
-import house.inksoftware.systemtest.domain.steps.ExecutableStep;
-import house.inksoftware.systemtest.domain.steps.StepExecutorService;
+import house.inksoftware.systemtest.domain.SystemTestExecutionServiceFactory;
+import house.inksoftware.systemtest.domain.config.SystemTestConfiguration;
+import house.inksoftware.systemtest.domain.config.infra.db.postgres.SystemTestPostgresLauncher;
+import house.inksoftware.systemtest.domain.config.infra.kafka.KafkaConfigurationFactory;
+import house.inksoftware.systemtest.domain.config.infra.rest.RestConfigurationFactory;
+import house.inksoftware.systemtest.domain.steps.request.RequestStep;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.kafka.test.EmbeddedKafkaBroker;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import tech.seedz.template.TemplateApplication;
-
-import javax.sql.DataSource;
+import tech.seedz.template.systemtest.kafka.LosKafkaAvroValueDeserializer;
+import tech.seedz.template.systemtest.kafka.LosKafkaAvroValueDeserializerFactory;
 
 import static org.springframework.test.context.TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS;
 
@@ -26,34 +30,43 @@ import static org.springframework.test.context.TestExecutionListeners.MergeMode.
 @Import({TemplateApplication.class})
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("systemtest")
+@EmbeddedKafka
 public class DefaultLostTemplateSystemTest extends AbstractSystemTest {
+
+    @Autowired
+    private EmbeddedKafkaBroker embeddedKafkaBroker;
+    @Autowired
+    private LosKafkaAvroValueDeserializerFactory losKafkaAvroValueDeserializerFactory;
 
     private static final String HAPPY_FLOW_SCENARIO_PATH = "tech/seedz/template/scenarios/happy-flow/";
 
     @Test
-    public void testBusinessLogic() {
-        var testExecutionContext = new DefaultTestExecutionContext();
-        StepExecutorService stepExecutorService = new StepExecutorService(HAPPY_FLOW_SCENARIO_PATH, port, testExecutionContext, restTemplate);
+    public void testBusinessLogic() throws Exception {
+        var config = SystemTestConfiguration.builder()
+                .baseFolder(HAPPY_FLOW_SCENARIO_PATH)
+                .restConfiguration(RestConfigurationFactory.create(restTemplate, port))
+                .kafkaConfiguration(KafkaConfigurationFactory.create(HAPPY_FLOW_SCENARIO_PATH, embeddedKafkaBroker, losKafkaAvroValueDeserializerFactory.create()))
+                .build();
+        var systemTestExecutionService = SystemTestExecutionServiceFactory.create(config);
 
-        ExecutableStep step = ExecutableStep.builder("1-create-loan").build();
-        stepExecutorService.execute(step);
+
+        RequestStep step = RequestStep.builder("1-create-loan").build();
+        systemTestExecutionService.execute(step);
     }
 
 
     public static class ResourceLauncher implements TestExecutionListener {
         private final SystemTestPostgresLauncher dbLauncher = new SystemTestPostgresLauncher("postgres:11.1");
-        private final SystemTestKafkaLauncher kafkaLauncher = new SystemTestKafkaLauncher("confluentinc/cp-kafka:5.4.3");
         @Override
         public void beforeTestClass(TestContext testContext) {
             dbLauncher.setup();
-            kafkaLauncher.setup();
-            new SystemTestDatabasePopulatorLauncher("db/migration/table", testContext.getApplicationContext().getBean(DataSource.class)).setup();
+//            new SystemTestDatabasePopulatorLauncher("db/migration/table", testContext.getApplicationContext().getBean(DataSource.class)).setup();
         }
 
         @Override
         public void afterTestExecution(TestContext testContext) throws Exception {
-            dbLauncher.shutdown();
-            kafkaLauncher.shutdown();
+//            dbLauncher.shutdown();
+//            kafkaLauncher.shutdown();
         }
     }
 }

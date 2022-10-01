@@ -26,9 +26,9 @@ public class LoanRequestService {
 
     public LoanRequestDto create(LoanRequestCreateDto dto) {
         var clientAppliedAlready = !repository.findByClientId(dto.getClientId()).isEmpty();
-        if (clientAppliedAlready) {
-            throw new IllegalArgumentException("Client with id " + dto.getClientId() + " applied for the loan already");
-        } else {
+//        if (clientAppliedAlready) {
+//            throw new IllegalArgumentException("Client with id " + dto.getClientId() + " applied for the loan already");
+//        } else {
             LoanRequest loanRequest = new LoanRequest();
             loanRequest.setClientId(dto.getClientId());
             loanRequest.setAmount(dto.getAmount());
@@ -36,9 +36,9 @@ public class LoanRequestService {
             repository.save(loanRequest);
 
             eventDispatcher.dispatch(LoanRequestCreatedEvent.from(loanRequest));
-
+//
             return LoanRequestDtoMapper.map(loanRequest);
-        }
+//        }
     }
 
     public List<LoanRequestDto> findByClientId(String clientId) {

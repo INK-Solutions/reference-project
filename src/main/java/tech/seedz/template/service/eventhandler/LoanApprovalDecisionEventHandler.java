@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tech.seedz.template.dao.repository.LoanRequestRepository;
-import tech.seedz.template.infrastructure.events.incoming.IncomingEventHandler;
 import tech.seedz.template.service.event.incoming.LoanApprovalDecisionEvent;
 
 /*

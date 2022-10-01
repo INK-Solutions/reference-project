@@ -23,12 +23,7 @@
     },
     {
         "name": "amount",
-        "type": {
-            "logicalType":"decimal",
-            "type": "bytes",
-            "precision": 20,
-            "scale": 7
-        }
+        "type": "double"
     }
 ],
 "name": "LoanApprovalRequest",

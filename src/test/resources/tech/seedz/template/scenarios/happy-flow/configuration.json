@@ -1,0 +1,7 @@
+{
+  "kafka": {
+    "input": {
+      "loan-approval-request":"template.project.loan.approval.request"
+    }
+  }
+}

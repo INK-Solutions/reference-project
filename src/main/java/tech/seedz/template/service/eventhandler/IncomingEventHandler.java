@@ -1,4 +1,4 @@
-package tech.seedz.template.infrastructure.events.incoming;
+package tech.seedz.template.service.eventhandler;
 
 import tech.seedz.template.service.event.incoming.IncomingEvent;
 
