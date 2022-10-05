@@ -7,6 +7,7 @@ import house.inksoftware.systemtest.domain.config.infra.db.postgres.SystemTestPo
 import house.inksoftware.systemtest.domain.config.infra.kafka.KafkaConfigurationFactory;
 import house.inksoftware.systemtest.domain.config.infra.rest.RestConfigurationFactory;
 import house.inksoftware.systemtest.domain.steps.request.RequestStep;
+import house.inksoftware.systemtest.domain.utils.JsonUtils;
 import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -19,13 +20,14 @@ import org.springframework.test.context.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import tech.seedz.template.TemplateApplication;
 import tech.seedz.template.systemtest.kafka.LosKafkaAvroValueDeserializer;
-import tech.seedz.template.systemtest.kafka.LosKafkaAvroValueDeserializerFactory;
+import tech.seedz.template.systemtest.kafka.LosKafkaAvroValueSerializer;
+import tech.seedz.template.systemtest.kafka.SystemTestKafkaEventProcessedCallback;
 
 import static org.springframework.test.context.TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS;
 
 @Ignore
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TemplateApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {TemplateApplication.class, SystemTestKafkaEventProcessedCallback.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestExecutionListeners(value = {DefaultLostTemplateSystemTest.ResourceLauncher.class}, mergeMode = MERGE_WITH_DEFAULTS)
 @Import({TemplateApplication.class})
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -36,21 +38,33 @@ public class DefaultLostTemplateSystemTest extends AbstractSystemTest {
     @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;
     @Autowired
-    private LosKafkaAvroValueDeserializerFactory losKafkaAvroValueDeserializerFactory;
+    private SystemTestKafkaEventProcessedCallback kafkaEventProcessedCallback;
 
     private static final String HAPPY_FLOW_SCENARIO_PATH = "tech/seedz/template/scenarios/happy-flow/";
 
     @Test
     public void testBusinessLogic() throws Exception {
+        var testExecutionContext = new TestExecutionContext();
+
         var config = SystemTestConfiguration.builder()
                 .baseFolder(HAPPY_FLOW_SCENARIO_PATH)
                 .restConfiguration(RestConfigurationFactory.create(restTemplate, port))
-                .kafkaConfiguration(KafkaConfigurationFactory.create(HAPPY_FLOW_SCENARIO_PATH, embeddedKafkaBroker, losKafkaAvroValueDeserializerFactory.create()))
+                .kafkaConfiguration(
+                        KafkaConfigurationFactory.create(HAPPY_FLOW_SCENARIO_PATH, embeddedKafkaBroker,
+                        new LosKafkaAvroValueSerializer(), new LosKafkaAvroValueDeserializer(), kafkaEventProcessedCallback)
+                )
                 .build();
         var systemTestExecutionService = SystemTestExecutionServiceFactory.create(config);
 
 
-        RequestStep step = RequestStep.builder("1-create-loan").build();
+        RequestStep step = RequestStep.builder("1-create-loan")
+                .callbackFunction(response -> testExecutionContext.setLoanId(response.read("id")))
+                .build();
+        systemTestExecutionService.execute(step);
+
+         step = RequestStep.builder("2-receive-decision")
+                 .requestPlaceholders(JsonUtils.JsonRequestPlaceholder.of("loanId", testExecutionContext.getLoanId()))
+                 .build();
         systemTestExecutionService.execute(step);
     }
 
@@ -60,13 +74,23 @@ public class DefaultLostTemplateSystemTest extends AbstractSystemTest {
         @Override
         public void beforeTestClass(TestContext testContext) {
             dbLauncher.setup();
-//            new SystemTestDatabasePopulatorLauncher("db/migration/table", testContext.getApplicationContext().getBean(DataSource.class)).setup();
         }
 
         @Override
         public void afterTestExecution(TestContext testContext) throws Exception {
-//            dbLauncher.shutdown();
-//            kafkaLauncher.shutdown();
+            dbLauncher.shutdown();
+        }
+    }
+
+    public class TestExecutionContext {
+        private String loanId;
+
+        public String getLoanId() {
+            return loanId;
+        }
+
+        public void setLoanId(String loanId) {
+            this.loanId = loanId;
         }
     }
 }

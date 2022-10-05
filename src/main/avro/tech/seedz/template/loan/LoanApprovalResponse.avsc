@@ -19,7 +19,7 @@
         "type": "boolean"
     }
 ],
-"name": "LoanApprovalDecisionEvent",
+"name": "LoanApprovalResponse",
 "namespace": "tech.seedz.template.generated.loan",
 "type": "record"
 }

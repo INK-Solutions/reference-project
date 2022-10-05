@@ -2,6 +2,9 @@
   "kafka": {
     "input": {
       "loan-approval-request":"template.project.loan.approval.request"
+    },
+    "output": {
+      "loan-approval-response": "template.project.loan.approval.response"
     }
   }
 }

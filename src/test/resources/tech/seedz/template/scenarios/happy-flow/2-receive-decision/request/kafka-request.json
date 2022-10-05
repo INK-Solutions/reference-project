@@ -1,0 +1,8 @@
+{
+  "topicLabel": "loan-approval-response",
+  "body": {
+    "id": "fake-loan-approval-response-id",
+    "loanId": {{loanId}},
+    "approved": true
+  }
+}
