@@ -1,0 +1,7 @@
+{
+  "httpCode": 200,
+  "body": {
+    "amount": 2300.55,
+    "approved": true
+  }
+}

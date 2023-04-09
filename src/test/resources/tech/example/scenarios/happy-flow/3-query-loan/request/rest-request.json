@@ -1,0 +1,7 @@
+{
+  "url": "/api/template/loan-requests/{{loanId}}",
+  "method": "GET",
+  "type": "PUBLIC",
+  "body": {
+  }
+}

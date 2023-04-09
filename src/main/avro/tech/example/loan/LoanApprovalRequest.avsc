@@ -1,0 +1,32 @@
+{
+"fields": [
+    {
+        "name": "eventId",
+        "type": {
+            "avro.java.string": "String",
+            "type": "string"
+        }
+    },
+    {
+        "name": "loanId",
+        "type": {
+            "avro.java.string": "String",
+            "type": "string"
+        }
+    },
+    {
+        "name": "clientId",
+        "type": {
+            "avro.java.string": "String",
+            "type": "string"
+        }
+    },
+    {
+        "name": "amount",
+        "type": "double"
+    }
+],
+"name": "LoanApprovalRequest",
+"namespace": "tech.example.generated.loan",
+"type": "record"
+}

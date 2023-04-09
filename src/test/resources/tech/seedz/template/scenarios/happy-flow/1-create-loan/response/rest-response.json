@@ -1,8 +1,0 @@
-{
-  "httpCode": 200,
-  "body": {
-    "clientId": "fake-client-id",
-    "amount": 2300.55,
-    "externallyApproved": false
-  }
-}
