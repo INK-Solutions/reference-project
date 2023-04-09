@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /*
-This class is given as an example and should be replaced with real class
+This class is given as an example and should be replaced with real business logic
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

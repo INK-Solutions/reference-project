@@ -1,4 +1,4 @@
-package tech.example.service.exception;
+package tech.example.service;
 
 public class EntityNotFoundException extends GenericException{
     public EntityNotFoundException(String message) {

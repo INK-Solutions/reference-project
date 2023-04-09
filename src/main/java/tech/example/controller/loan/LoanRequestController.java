@@ -10,8 +10,9 @@ import tech.example.controller.loan.dto.LoanRequestDto;
 import tech.example.service.loan.LoanRequestService;
 
 import javax.validation.Valid;
-import java.util.List;
-
+/*
+    This class is given as an example and should be replaced with real business logic
+ */
 @Log4j2
 @RequiredArgsConstructor
 @RestController

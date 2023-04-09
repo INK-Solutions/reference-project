@@ -1,4 +1,4 @@
-package tech.example.service.exception;
+package tech.example.service;
 
 public abstract class GenericException extends RuntimeException {
     public GenericException(String message) {

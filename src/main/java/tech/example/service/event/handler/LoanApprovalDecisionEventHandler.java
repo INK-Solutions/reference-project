@@ -7,7 +7,7 @@ import tech.example.dao.repository.LoanRequestRepository;
 import tech.example.service.event.incoming.LoanApprovalResponse;
 
 /*
-This class is given as an example and should be replaced with real handler
+This class is given as an example and should be replaced with real business logic
  */
 @Service
 @RequiredArgsConstructor

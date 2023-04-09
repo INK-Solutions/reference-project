@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/*
+    This class is given as an example and should be replaced with real business logic
+ */
 @Builder
 @Data
 public class LoanRequestDto {

@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.example.controller.config.dto.AppExceptionDto;
-import tech.example.service.exception.GenericException;
+import tech.example.service.GenericException;
 
 @RestControllerAdvice
 @Order(value = 100)

@@ -4,7 +4,7 @@ import tech.example.service.event.outgoing.LoanRequestCreatedEvent;
 import tech.example.generated.loan.LoanApprovalRequest;
 
 /*
-This class is given as an example and should be replaced with real class
+This class is given as an example and should be replaced with real business logic
  */
 public class LoanApprovalRequestMapper {
     public static LoanApprovalRequest map(LoanRequestCreatedEvent event) {

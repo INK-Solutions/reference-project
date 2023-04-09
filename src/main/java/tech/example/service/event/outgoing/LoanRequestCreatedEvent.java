@@ -6,7 +6,7 @@ import tech.example.dao.model.loan.LoanRequest;
 import java.math.BigDecimal;
 
 /*
-This class is given as an example and should be replaced with real class
+This class is given as an example and should be replaced with real business logic
  */
 @Getter
 public class LoanRequestCreatedEvent extends OutgoingEvent {
