@@ -27,3 +27,5 @@ public class LoanApprovalDecisionEventHandler implements IncomingEventHandler<Lo
         loanRequestRepository.save(loanRequest);
     }
 }
+
+
