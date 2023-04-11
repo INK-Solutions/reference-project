@@ -35,6 +35,7 @@ public class LoanRequestService {
     private void assertFirstLoan(String clientId) {
         var loan = repository.findByClientId(clientId);
 
+        //why client cannot have more than one loan?
         if (loan.isPresent()) {
             throw new LoanAlreadyGivenException("Loan for customer " + clientId + " was already given");
         }
