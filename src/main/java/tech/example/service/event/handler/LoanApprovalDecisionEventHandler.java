@@ -21,6 +21,7 @@ public class LoanApprovalDecisionEventHandler implements IncomingEventHandler<Lo
 
         var loanRequest = loanRequestRepository
                 .findById(event.getLoanId())
+                //how this will be handled?
                 .orElseThrow(() -> new IllegalArgumentException("Loan with id " + event.getLoanId() + " is not found"));
 
         loanRequest.setApproved(event.isApproved());
